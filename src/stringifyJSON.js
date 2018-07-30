@@ -5,17 +5,50 @@
 
 var stringifyJSON = function(obj) {
   // your code goes here
-  // take in primative, array, obj, string, nested arrays/ objects
-    // determine type
-      // if primative return string
-      // if array, loop through elements
-      // add '['
-        // if array or obj run stringify again with element as input
-      // add ']'
-      // if obj add '{', loop through key value pairs
-        // if value is array or obj, run stringify with value
-      // add '}'
-  // return string
 
-  return result;
+  if (typeof obj === 'function' || obj === undefined) {
+    return undefined;
+  }
+  
+  if (obj === null) {
+    return 'null';
+  }
+  
+  if (typeof obj === 'string') {
+    return `"${obj}"`;
+  }
+
+  if (Array.isArray(obj)) {
+    let result = '[';
+    obj.forEach((value, index) => {
+      if (index !== obj.length - 1) {
+        result += stringifyJSON(value) + ',';
+      } else {
+        result += stringifyJSON(value);
+      }
+    });
+    return result + ']';
+  }
+
+  if (typeof obj === 'object') {
+    if (Object.keys(obj).length === 0) {
+      return '{}';
+    }
+    
+    let result = '{';
+    for (var key in obj) {
+      if (stringifyJSON(obj[key]) !== undefined) {
+        result += stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
+      }
+      
+    }
+    if (result[result.length - 1] === ',') {
+      result = result.substring(0, result.length - 1);
+    }
+    
+    return result + '}';
+  }
+
+  // primative
+  return String(obj);
 };
